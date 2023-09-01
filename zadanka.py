@@ -14,7 +14,7 @@ def read_csv(csv_file):
             for x in reader:
                 print('{} {}, {} {}'.format(headers[1], x[1], headers[2], x[2]))
     except FileNotFoundError as err:
-        print("Nie ma takiego pliku w repozytorium", err)
+        print(f"Error: File '{csv_file}' not found - {err}")
 # wczytalem sobie te punkty do tablicy
 def dodanieczasuizapisaniedotablicyy(csv_file):
     tablica = []
@@ -23,9 +23,10 @@ def dodanieczasuizapisaniedotablicyy(csv_file):
             reader = csv.reader(file)
 
             for line in reader:
-                if line[0] == "X" or line[0] == 'Sequence':
+                if line[0] in['X', 'Sequence']:
                     tablica.append(line)
-
+                    if line[-1] == '':
+                        line.pop()
                 else:
                     line[3] = 0
                     line[0] = int(line[0])
@@ -39,12 +40,11 @@ def dodanieczasuizapisaniedotablicyy(csv_file):
             okres_probkowania = float(tablica[1][4])
 
             for y in tablica:
-                if y[0] == "X" or y[0] == 'Sequence':
-                    continue
-                else:
+                if y[0] not in ['X', 'Sequence']:
                     numer_probki = float(y[0])
                     czas_obecny = czas_startu + numer_probki * okres_probkowania
-                    y.insert(3, czas_obecny)
+                    y[3] = round(czas_obecny, 7)
+                    y.insert(4, okres_probkowania)
         return tablica
     except ValueError as err:
         print("Błąd przy zapisywaniu do tablicy wynikający najprawdopodbniej z braku możliwości przekonwertowania stringa na float", err)
@@ -320,12 +320,12 @@ def rysowaniehistogramu(csv_file):
 
 if __name__ == '__main__':
     
-    read_csv('01169356.csv')
-    #print(dodanieczasuizapisaniedotablicyy('01169356.csv')) do poprawy
-    #zapisdopliku('01169356.csv', 'mojplik.txt')
-    #rysowaniewykresow('01169356.csv')
-    #rysowaniewykresu_ch3_ch2('01169356.csv')
-    #wartoscimaksminsrednia('01169356.csv')
-    #okresprzebiegu('01169356.csv')
-    #wartoscsrednia_odchyleniestandardowe('01169356.csv')
-    #rysowaniehistogramu('01169356.csv')
+    #read_csv('01169356.csv')
+    print(dodanieczasuizapisaniedotablicyy('01169356.csv')) 
+    zapisdopliku('01169356.csv', 'mojplik.txt')
+    rysowaniewykresow('01169356.csv')
+    rysowaniewykresu_ch3_ch2('01169356.csv')
+    wartoscimaksminsrednia('01169356.csv')
+    okresprzebiegu('01169356.csv')
+    wartoscsrednia_odchyleniestandardowe('01169356.csv')
+    rysowaniehistogramu('01169356.csv')
